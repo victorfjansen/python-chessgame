@@ -1,7 +1,7 @@
 import sys
 import pygame
-from classes.board import Board
-from classes.graphics import Graphics
+from classes.board.board import Board
+from classes.graphics.graphics import Graphics
 from constants.colors import COLORS
 
 
@@ -92,7 +92,7 @@ class Game:
         self.graphics.update_display(self.board, self.selected_legal_moves, self.selected_piece)
 
     def terminate_game(self):
-        """Quits the program and ends the game."""
+        # Quita e termina o jogo
         pygame.quit()
         sys.exit()
 
@@ -106,10 +106,6 @@ class Game:
             self.update()
 
     def end_turn(self):
-        """
-        End the turn. Switches the current player.
-        end_turn() also checks for and game and resets a lot of class attributes.
-        """
         if self.turn == COLORS.BLUE.value:
             self.turn = COLORS.RED.value
         else:
@@ -121,14 +117,11 @@ class Game:
 
         if self.check_for_endgame():
             if self.turn == COLORS.BLUE.value:
-                self.graphics.draw_message("RED WINS!")
+                self.graphics.draw_message("Vermelho ganhou")
             else:
-                self.graphics.draw_message("BLUE WINS!")
+                self.graphics.draw_message("Azul Ganhou!")
 
     def check_for_endgame(self):
-        """
-        Checks to see if a player has run out of moves or pieces. If so, then return True. Else return False.
-        """
         for x in range(8):
             for y in range(8):
                 if self.board.location((x, y)).color == COLORS.BLACK.value and self.board.location(
