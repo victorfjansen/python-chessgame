@@ -57,7 +57,7 @@ class GraphicsModel:
         self.__text_rect_obj = value
 
     def get_font_obj(self):
-        return self.__font_obj
+        return self.__text_font_obj
 
     def set_font_obj(self, value):
         self.__text_font_obj = value

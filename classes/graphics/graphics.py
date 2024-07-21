@@ -37,15 +37,37 @@ class Graphics(GraphicsModel, GraphicsContract):
 
     def draw_board_pieces(self, board):
         # Desenha as peças no display
+        red_pawn_image = "assets/pieces/red-pawn.png"
+        red_pawn_image = pygame.transform.scale(pygame.image.load(red_pawn_image),
+                                                (self.get_square_size(), self.get_square_size()))
+
+        black_pawn_image = "assets/pieces/black-pawn.png"
+        black_pawn_image = pygame.transform.scale(pygame.image.load(black_pawn_image),
+                                                  (self.get_square_size(), self.get_square_size()))
         for x in range(8):
             for y in range(8):
-                if board.get_matrix()[x][y].occupant is not None:
-                    pygame.draw.circle(self.get_screen(), board.get_matrix()[x][y].occupant.color,
-                                       self.pixel_coords((x, y)), self.get_piece_size())
+                current_piece = board.get_matrix()[x][y].get_occupant()
+                if current_piece is not None:
+                    try:
+                        self.get_screen().blit(
+                            black_pawn_image if current_piece.get_color() == COLORS.BLUE.value else red_pawn_image,
+                            self.pixel_coords((x - 0.5, y - 0.5)))
 
-                    if board.location((x, y)).occupant.king:
-                        pygame.draw.circle(self.get_screen(), COLORS.GOLD.value, self.pixel_coords((x, y)),
-                                           int(self.get_piece_size() / 1.7), self.get_piece_size() >> 2)
+                    except:
+                        pygame.draw.circle(self.get_screen(), board.get_matrix()[x][y].get_occupant().get_color(),
+                                           self.pixel_coords((x, y)), self.get_piece_size())
+
+                    if board.location((x, y)).get_occupant().get_king():
+                        try:
+                            pawn_image = "assets/pieces/black-king.png" if current_piece.get_color() == COLORS.BLUE.value \
+                                else "assets/pieces/red-king.png"
+                            pawn_image = pygame.transform.scale(pygame.image.load(pawn_image),
+                                                                (self.get_square_size(), self.get_square_size()))
+                            self.get_screen().blit(pawn_image, self.pixel_coords((x - 0.5, y - 0.5)))
+
+                        except:
+                            pygame.draw.circle(self.get_screen(), COLORS.GOLD.value, self.pixel_coords((x, y)),
+                                               int(self.get_piece_size() / 1.7), self.get_piece_size() >> 2)
 
     def pixel_coords(self, board_coords):
         #pega a tupla "posições" dos quadrados na tela
@@ -71,7 +93,5 @@ class Graphics(GraphicsModel, GraphicsContract):
         self.set_message(True)
         self.set_font_obj(pygame.font.Font('freesansbold.ttf', 44))
         self.set_text_surface_obj(self.get_font_obj().render(message, True, COLORS.HIGH.value, COLORS.BLACK.value))
-        self.set_text_rect_obj(self.get_text_rect_obj().get_rect())
+        self.set_text_rect_obj(self.get_text_surface_obj().get_rect())
         self.get_text_rect_obj().center = (self.get_window_size() >> 1, self.get_window_size() >> 1)
-
-
