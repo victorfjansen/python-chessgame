@@ -60,5 +60,4 @@ class GameModel:
         return self._mouse_pos
 
     def set_mouse_pos(self, mouse_pos):
-        # You can add validation here if needed, e.g., checking if mouse_pos is a tuple of integers
         self._mouse_pos = mouse_pos

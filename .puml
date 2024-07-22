@@ -1,0 +1,76 @@
+@startuml Checkers
+skinparam groupInheritance 4
+skinparam nodesep 50
+
+package GameStructure <<Folder>> {
+class Game {
+}
+
+class GameModel {
+    # _graphics: Graphics
+    # _board: Board
+    # _turn: COLORS
+    # _selected_piece: Piece
+    # _hop: boolean
+    # _selected_legal_moves: [][]
+    # _mouse_pos: int[]
+    + get_graphics(): Graphics
+    + set_graphics(graphics: Graphics): void
+    + get_board(): Board
+    + set_board(board: Board): void
+    + get_turn(): COLORS
+    + set_turn(turn: COLORS): void
+    + get_selected_piece(): Piece
+    + set_selected_piece(selected_piece: Piece): void
+    + get_hop(): boolean
+    + set_hop(hop: boolean): void
+    + get_selected_legal_moves(): [][]
+    + set_selected_legal_moves(selected_legal_moves: [][]): void
+    + get_mouse_pos(): int[]
+    + set_mouse_pos(mouse_pos: int[]): void
+}
+
+abstract class GameContract {
+    + setup(): void
+    + event_loop(): void
+    + update(): void
+    + terminate_game(): void
+    + main(): void
+    + end_turn(): void
+    + check_for_endgame(): boolean
+}
+}
+
+
+class BoardModel {
+    # _matrix: List[List[None or int]]
+    + get_matrix(): List[List[None or int]]
+    + set_matrix(matrix: List[List[None or int]]): void
+}
+
+abstract class BoardContract {
+    + new_board(): List[List[None or int]]
+    + board_string(board: Board): List[List[string]]
+    + position(direction: Directions, pixel: tuple[int]): tuple[int]
+    + adjacent(pixel: tuple[int]): List[tuple[int]]
+    + location(pixel: tuple[int]): tuple[int]
+    + blind_legal_moves(pixel: tuple[int]): List[tuple[int]]
+    + legal_moves(pixel: tuple[int], hop: boolean): List[tuple[int]]
+    + remove_piece(pixel: tuple[int]): void
+    + move_piece(pixel_start: tuple[int], pixel_end: tuple[int]): void
+    + is_end_square(coords: List[]): void
+    + on_board(pixel: tuple[int]): void
+    + verify_and_set_king(pixel: tuple[int]): void
+}
+
+class Board {}
+
+Board <|-- BoardModel : herda
+Board <|-- BoardContract : herda
+
+Game <|-- GameModel : herda
+Game <|-- GameContract : herda
+
+GameStructure o-- Board : utiliza
+
+@enduml
