@@ -12,8 +12,8 @@ class GraphicsModel:
         self.__fps = 60
         self.__clock = pygame.time.Clock()
 
-        self.__window_size = 1000
-        self.__screen = pygame.display.set_mode((self.get_window_size(), self.get_window_size()))
+        self.__window_size = 600
+        self.__screen = pygame.display.set_mode((self.get_window_size(), self.get_window_size()), pygame.RESIZABLE)
         self.__background = pygame.image.load('assets/board.png')
         self.__scaledbackground = pygame.transform.scale(self.get_background(),
                                                          (self.get_window_size(), self.get_window_size()))
