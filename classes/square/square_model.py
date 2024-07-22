@@ -1,16 +1,16 @@
 class SquareModel:
     def __init__(self, color, occupant=None):
-        self.__color = color
-        self.__occupant = occupant
+        self._color = color
+        self._occupant = occupant
 
     def set_color(self, color):
-        self.__color = color
+        self._color = color
 
     def set_occupant(self, occupant):
-        self.__occupant = occupant
+        self._occupant = occupant
 
     def get_color(self):
-        return self.__color
+        return self._color
 
     def get_occupant(self):
-        return self.__occupant
+        return self._occupant

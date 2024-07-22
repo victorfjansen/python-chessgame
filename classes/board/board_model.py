@@ -3,10 +3,10 @@ from typing import List
 
 class BoardModel:
     def __init__(self):
-        self.__matrix = None
+        self._matrix = None
 
     def get_matrix(self) -> List[List[None or int]]:
-        return self.__matrix
+        return self._matrix
 
     def set_matrix(self, value):
-        self.__matrix = value
+        self._matrix = value
