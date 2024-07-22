@@ -3,72 +3,99 @@ import pygame
 
 class GraphicsModel:
     def __init__(self):
-        self._text_font_obj = None
-        self._text_rect_obj = None
-        self._text_surface_obj = None
-        self._caption = "Damas by Victorfjansen"
+        self.__text_font_obj = None
+        self.__text_rect_obj = None
+        self.__text_surface_obj = None
+        self.__caption = "Damas by Victorfjansen"
 
-        self._fps = 60
-        self._clock = pygame.time.Clock()
+        self.__fps = 60
+        self.__clock = pygame.time.Clock()
 
-        self._window_size = 600
-        self._screen = pygame.display.set_mode((self.get_window_size(), self.get_window_size()))
-        self._background = pygame.image.load('assets/board.png')
-        self._scaledbackground = pygame.transform.scale(self.get_background(),
+        self.__window_size = 600
+        self.__screen = pygame.display.set_mode((self.get_window_size(), self.get_window_size()))
+        self.__background = pygame.image.load('assets/board.png')
+        self.__scaledbackground = pygame.transform.scale(self.get_background(),
                                                          (self.get_window_size(), self.get_window_size()))
 
-        self._square_size = self.get_window_size() >> 3
-        self._piece_size = self.get_square_size() // 2
+        self.__square_size = self.get_window_size() >> 3
+        self.__piece_size = self.get_square_size() // 2
 
-        self._message = False
+        self.__message = False
 
     def get_caption(self):
-        return self._caption
+        return self.__caption
+    
+    def set_caption(self, value):
+        self.__caption = value
 
     def get_fps(self):
-        return self._fps
+        return self.__fps
+
+    def set_fps(self, value):
+        self.__fps = value
 
     def get_clock(self):
-        return self._clock
+        return self.__clock
+    
+    def set_clock(self, clock):
+        self.__clock = clock
 
     def get_window_size(self):
-        return self._window_size
+        return self.__window_size
+    
+    def set_window_size(self, value):
+        self.__window_size = value
 
     def get_screen(self):
-        return self._screen
+        return self.__screen
+    
+    def set_screen(self, screen):
+        self.__screen = screen
 
     def get_background(self):
-        return self._background
+        return self.__background
+    
+    def set_background(self, background):
+        self.__background = background
 
     def get_scaledbackground(self):
-        return self._scaledbackground
+        return self.__scaledbackground
+    
+    def set_scaledbackground(self, scaledbackground):
+        self.__scaledbackground = scaledbackground
 
     def get_square_size(self):
-        return self._square_size
+        return self.__square_size
+    
+    def set_square_size(self, value):
+        self.__square_size = value
 
     def get_piece_size(self):
-        return self._piece_size
+        return self.__piece_size
+    
+    def set_piece_size(self, value):
+        self.__piece_size = value
 
     def get_text_rect_obj(self):
-        return self._text_rect_obj
+        return self.__text_rect_obj
 
     def set_text_rect_obj(self, value):
-        self._text_rect_obj = value
+        self.__text_rect_obj = value
 
     def get_font_obj(self):
-        return self._text_font_obj
+        return self.__text_font_obj
 
     def set_font_obj(self, value):
-        self._text_font_obj = value
+        self.__text_font_obj = value
 
     def get_text_surface_obj(self):
-        return self._text_surface_obj
+        return self.__text_surface_obj
 
     def set_text_surface_obj(self, value):
-        self._text_surface_obj = value
+        self.__text_surface_obj = value
 
     def set_message(self, value):
-        self._message = value
+        self.__message = value
 
     def get_message(self):
-        return self._message
+        return self.__message

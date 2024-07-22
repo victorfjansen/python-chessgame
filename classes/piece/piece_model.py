@@ -1,16 +1,16 @@
 class PieceModel:
     def __init__(self, color, king=False):
-        self._color = color
-        self._king = king
+        self.__color = color
+        self.__king = king
 
     def set_color(self, color):
-        self._color = color
+        self.__color = color
 
     def get_color(self):
-        return self._color
+        return self.__color
 
     def set_king(self, king):
-        self._king = king
+        self.__king = king
 
     def get_king(self):
-        return self._king
+        return self.__king

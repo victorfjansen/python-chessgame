@@ -8,6 +8,7 @@ from constants.colors import COLORS
 
 class Game(GameModel, GameContract):
     def __init__(self):
+        pygame.font.init()
         GameModel.__init__(self)
 
     def setup(self):

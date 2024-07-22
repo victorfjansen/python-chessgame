@@ -2,75 +2,171 @@
 skinparam groupInheritance 4
 skinparam nodesep 50
 
-package GameStructure <<Folder>> {
-class Game {
+package GameEntity <<Frame>> {
+    class Game {}
+
+    class GameModel {
+        - _graphics: Graphics
+        - _board: Board
+        - _turn: COLORS
+        - _selected_piece: Piece
+        - _hop: boolean
+        - _selected_legal_moves: List[List[]]
+        - _mouse_pos: List[int]
+        + get_graphics(): Graphics
+        + set_graphics(graphics: Graphics): void
+        + get_board(): Board
+        + set_board(board: Board): void
+        + get_turn(): COLORS
+        + set_turn(turn: COLORS): void
+        + get_selected_piece(): Piece
+        + set_selected_piece(selected_piece: Piece): void
+        + get_hop(): boolean
+        + set_hop(hop: boolean): void
+        + get_selected_legal_moves(): [][]
+        + set_selected_legal_moves(selected_legal_moves: [][]): void
+        + get_mouse_pos(): int[]
+        + set_mouse_pos(mouse_pos: int[]): void
+    }
+
+    abstract class GameContract {
+        + setup(): void
+        + event_loop(): void
+        + update(): void
+        + terminate_game(): void
+        + main(): void
+        + end_turn(): void
+        + check_for_endgame(): boolean
+    }
 }
 
-class GameModel {
-    # _graphics: Graphics
-    # _board: Board
-    # _turn: COLORS
-    # _selected_piece: Piece
-    # _hop: boolean
-    # _selected_legal_moves: [][]
-    # _mouse_pos: int[]
-    + get_graphics(): Graphics
-    + set_graphics(graphics: Graphics): void
-    + get_board(): Board
-    + set_board(board: Board): void
-    + get_turn(): COLORS
-    + set_turn(turn: COLORS): void
-    + get_selected_piece(): Piece
-    + set_selected_piece(selected_piece: Piece): void
-    + get_hop(): boolean
-    + set_hop(hop: boolean): void
-    + get_selected_legal_moves(): [][]
-    + set_selected_legal_moves(selected_legal_moves: [][]): void
-    + get_mouse_pos(): int[]
-    + set_mouse_pos(mouse_pos: int[]): void
+package GraphicsEntity <<Frame>> {
+    class GraphicsModel {
+        - _text_font_obj: Font
+        - _text_rect_obj: Rect
+        - _text_surface_obj: Surface
+        - _caption: string
+        - _fps: int
+        - _clock: Clock
+        - _window_size: int
+        - _screen: Surface
+        - _scaledbackground: Surface
+        - _square_size: int
+        - _piece_size: int
+        - _message: string
+        
+        + get_text_font_obj(): Font
+        + set_text_font_obj(text_font_obj: Font): void
+        + get_text_rect_obj(): Rect
+        + set_text_rect_obj(text_rect_obj: Rect): void
+        + get_text_surface_obj(): Surface
+        + set_text_surface_obj(text_surface_obj: Surface): void
+        + get_caption(): string
+        + set_caption(caption: string): void
+        + get_fps(): int
+        + set_fps(fps: int): void
+        + get_clock(): Clock
+        + set_clock(clock: Clock): void
+        + get_window_size(): int
+        + set_window_size(window_size: int): void
+        + get_screen(): Surface
+        + set_screen(screen: Surface): void
+        + get_scaledbackground(): Surface
+        + set_scaledbackground(scaledbackground: Surface): void
+        + get_square_size(): int
+        + set_square_size(square_size: int): void
+        + get_piece_size(): int
+        + set_piece_size(piece_size: int): void
+        + get_message(): string
+        + set_message(message: string): void
+    }
+
+    abstract class GraphicsContract {
+        + setup_window(): void
+        + update_display(board: Board, legal_moves: List[List[]], selected_piece: Piece): void
+        + draw_board_squares(board: Board): void
+        + draw_board_pieces(board: Board): void
+        + pixel_coords(board_coords: tuple[int]): tuple[int]
+        + board_coords(pixel: tuple[int]): tuple[int]
+        + highlight_squares(squares: List[], origin: tuple[int]): void
+        + draw_message(message: string): void
+    }
+
+    class Graphics {}
 }
 
-abstract class GameContract {
-    + setup(): void
-    + event_loop(): void
-    + update(): void
-    + terminate_game(): void
-    + main(): void
-    + end_turn(): void
-    + check_for_endgame(): boolean
+package Core <<Rectangle>> {
+    package PieceEntity {
+    class PieceModel {
+        - __color: COLORS
+        - __king: boolean
+        + get_color(): COLORS
+        + set_color(color: COLORS): void
+        + get_king(): boolean
+        + set_king(king: boolean): void
+    }
+
+    class Piece{}
+}
+
+package SquareEntity <<Frame>>{
+    class SquareModel {
+        - __color: COLORS
+        - __occupant: Piece
+        + get_color(): COLORS
+        + set_color(color: COLORS): void
+        + get_occupant(): Piece
+        + set_occupant(piece: Piece): void
+    }
+
+    class Square {}
+}
+
+package BoardEntity <<Frame>> {
+    class BoardModel {
+        - _matrix: List[List[None or int]]
+        + get_matrix(): List[List[None or int]]
+        + set_matrix(matrix: List[List[None or int]]): void
+    }
+
+    abstract class BoardContract {
+        + new_board(): List[List[None or int]]
+        + board_string(board: Board): List[List[string]]
+        + position(direction: Directions, pixel: tuple[int]): tuple[int]
+        + adjacent(pixel: tuple[int]): List[tuple[int]]
+        + location(pixel: tuple[int]): tuple[int]
+        + blind_legal_moves(pixel: tuple[int]): List[tuple[int]]
+        + legal_moves(pixel: tuple[int], hop: boolean): List[tuple[int]]
+        + remove_piece(pixel: tuple[int]): void
+        + move_piece(pixel_start: tuple[int], pixel_end: tuple[int]): void
+        + is_end_square(coords: List[]): void
+        + on_board(pixel: tuple[int]): void
+        + verify_and_set_king(pixel: tuple[int]): void
+    }
+
+    class Board {}
 }
 }
 
+Board <|-right- BoardModel : herda
+Board <|-left- BoardContract : herda
 
-class BoardModel {
-    # _matrix: List[List[None or int]]
-    + get_matrix(): List[List[None or int]]
-    + set_matrix(matrix: List[List[None or int]]): void
-}
+Game <|-right- GameModel : herda
+Game <|-left- GameContract : herda
 
-abstract class BoardContract {
-    + new_board(): List[List[None or int]]
-    + board_string(board: Board): List[List[string]]
-    + position(direction: Directions, pixel: tuple[int]): tuple[int]
-    + adjacent(pixel: tuple[int]): List[tuple[int]]
-    + location(pixel: tuple[int]): tuple[int]
-    + blind_legal_moves(pixel: tuple[int]): List[tuple[int]]
-    + legal_moves(pixel: tuple[int], hop: boolean): List[tuple[int]]
-    + remove_piece(pixel: tuple[int]): void
-    + move_piece(pixel_start: tuple[int], pixel_end: tuple[int]): void
-    + is_end_square(coords: List[]): void
-    + on_board(pixel: tuple[int]): void
-    + verify_and_set_king(pixel: tuple[int]): void
-}
+Graphics <|-left- GraphicsContract : herda
+Graphics <|-right- GraphicsModel : herda
 
-class Board {}
+Piece <|-right- PieceModel : herda
 
-Board <|-- BoardModel : herda
-Board <|-- BoardContract : herda
+Square <|-right- SquareModel : herda
 
-Game <|-- GameModel : herda
-Game <|-- GameContract : herda
+Square "1" *-- "1" Piece : contém
 
-GameStructure o-- Board : utiliza
+Board "1" *-- "0..*" Square : contém
+
+Graphics "1" o-- "0..*" Board : contém
+
+Game "1" *-- "1" Graphics : contém
 
 @enduml
