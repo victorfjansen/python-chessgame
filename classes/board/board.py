@@ -38,19 +38,6 @@ class Board(BoardModel, BoardContract):
 
         return matrix
 
-    def board_string(self, board):
-        # Pega o board em string e localiza os quadrados pretos e brancos
-        board_string = [[None] * 8] * 8
-
-        for x in range(8):
-            for y in range(8):
-                if board[x][y].get_color() == COLORS.WHITE.value:
-                    board_string[x][y] = "WHITE"
-                else:
-                    board_string[x][y] = "BLACK"
-
-        return board_string
-
     def position(self, direction, pixel):
         # Devolve as posições a partir da direção dada.
         x = pixel[0]

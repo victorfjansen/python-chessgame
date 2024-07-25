@@ -131,7 +131,6 @@ package BoardEntity <<Frame>> {
 
     abstract class BoardContract {
         + new_board(): List[List[None or int]]
-        + board_string(board: Board): List[List[string]]
         + position(direction: Directions, pixel: tuple[int]): tuple[int]
         + adjacent(pixel: tuple[int]): List[tuple[int]]
         + location(pixel: tuple[int]): tuple[int]
@@ -163,7 +162,7 @@ Square <|-right- SquareModel : herda
 
 Square "1" *-- "1" Piece : contém
 
-Board "1" *-- "0..*" Square : contém
+Board "1" *-- "1..*" Square : contém
 
 Graphics "1" o-- "0..*" Board : contém
 

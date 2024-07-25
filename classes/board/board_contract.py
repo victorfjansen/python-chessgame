@@ -6,11 +6,7 @@ class BoardContract(ABC):
     @abstractmethod
     def new_board(self) -> List[List[None or int]]:
         pass
-
-    @abstractmethod
-    def board_string(self, board):
-       pass
-
+    
     @abstractmethod
     def position(self, direction, pixel):
         pass
