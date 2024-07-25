@@ -92,6 +92,6 @@ class Graphics(GraphicsModel, GraphicsContract):
     def draw_message(self, message):
         self.set_message(True)
         self.set_font_obj(pygame.font.Font('freesansbold.ttf', 44))
-        self.set_text_surface_obj(self.get_font_obj().render(message, True, COLORS.HIGH.value, COLORS.BLACK.value))
+        self.set_text_surface_obj(self.get_font_obj().render(message, True, COLORS.RED.value, COLORS.WHITE.value))
         self.set_text_rect_obj(self.get_text_surface_obj().get_rect())
         self.get_text_rect_obj().center = (self.get_window_size() >> 1, self.get_window_size() >> 1)
