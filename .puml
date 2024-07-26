@@ -147,18 +147,18 @@ package BoardEntity <<Frame>> {
 }
 }
 
-Board <|-right- BoardModel : herda
-Board <|-left- BoardContract : herda
+Board -right-|> BoardModel : herda
+Board -left-|> BoardContract : herda
 
-Game <|-right- GameModel : herda
-Game <|-left- GameContract : herda
+Game -right-|> GameModel : herda
+Game -left-|> GameContract : herda
 
-Graphics <|-left- GraphicsContract : herda
-Graphics <|-right- GraphicsModel : herda
+Graphics -left-|> GraphicsContract : herda
+Graphics -right-|> GraphicsModel : herda
 
-Piece <|-right- PieceModel : herda
+Piece -right-|> PieceModel : herda
 
-Square <|-right- SquareModel : herda
+Square -right-|> SquareModel : herda
 
 Square "1" *-- "1" Piece : contém
 
