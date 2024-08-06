@@ -1,5 +1,6 @@
 from classes.board.board import Board
 from classes.graphics.graphics import Graphics
+from classes.menu.menu import MainMenu
 from constants.colors import COLORS
 
 
@@ -7,6 +8,8 @@ class GameModel:
     def __init__(self):
         self.__graphics = Graphics()
         self.__board = Board()
+
+        self.__main_menu = MainMenu()
 
         #primeiro turno
         self.__turn = COLORS.BLUE.value
@@ -61,3 +64,9 @@ class GameModel:
 
     def set_mouse_pos(self, mouse_pos):
         self.__mouse_pos = mouse_pos
+
+    def set_main_menu(self, main_menu):
+        self.__main_menu = main_menu
+
+    def get_main_menu(self):
+        return self.__main_menu

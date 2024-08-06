@@ -11,7 +11,6 @@ class Graphics(GraphicsModel, GraphicsContract):
 
     def setup_window(self):
         #Inicializa a window 
-        pygame.init()
         pygame.display.set_caption(self.get_caption())
 
     def update_display(self, board, legal_moves, selected_piece):

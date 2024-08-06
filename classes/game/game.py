@@ -90,6 +90,9 @@ class Game(GameModel, GameContract):
         sys.exit()
 
     def main(self):
+        self.get_main_menu().setup_menu(self)
+
+    def init_game_main_loop(self):
         # seta o window e interface gráfica
         self.setup()
 
