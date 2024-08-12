@@ -1,3 +1,4 @@
+from time import sleep
 from classes.enemy.enemy_contract import EnemyContract
 from classes.piece.piece import Piece
 from constants.directions import Directions
@@ -200,6 +201,10 @@ class HardEnemy(EnemyContract):
         selected_piece, coord_to_go, coords = self.get_random_piece_with_adjacent(game.get_board(), game)
 
         game.set_selected_piece(coords)
+        game.set_selected_legal_moves([coord_to_go])
+
+        game.update()
+        sleep(0.3)
         game.get_board().move_piece(coords, coord_to_go)
 
         if coord_to_go not in game.get_board().adjacent(coords):
@@ -215,17 +220,21 @@ class HardEnemy(EnemyContract):
         if game.get_hop():
             # se houver uma peça capturada e ainda houver movimentos "legais"
 
-            legal_moves = game.get_board().legal_moves(game.get_selected_piece(), game.get_hop())
             should_get_next_hop = self.should_get_next_hop(game, game.get_board(), game.get_selected_piece())
 
             if should_get_next_hop and len(should_get_next_hop) > 0:
                 # faz a movimentação da peça
+
+                game.set_selected_legal_moves([should_get_next_hop[0][1]])
+                game.update()
+                sleep(0.3)
+
                 game.get_board().move_piece(game.get_selected_piece(), should_get_next_hop[0][1])
                 game.get_board().remove_piece(
                     ((game.get_selected_piece()[0] + should_get_next_hop[0][1][0]) // 2,
                      (game.get_selected_piece()[1] + should_get_next_hop[0][1][1]) // 2))
-
                 game.end_turn()
             game.end_turn()
+        
         else:
             game.end_turn()

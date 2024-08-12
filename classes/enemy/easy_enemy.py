@@ -1,3 +1,4 @@
+from time import sleep
 from classes.enemy.enemy_contract import EnemyContract
 from classes.piece.piece import Piece
 import random
@@ -28,6 +29,10 @@ class EasyEnemy(EnemyContract):
         selected_piece, coord_to_go, coords = self.get_random_piece_with_legal_moves(game.get_board(), game)
 
         game.set_selected_piece(coords)
+        game.set_selected_legal_moves([coord_to_go])
+
+        game.update()
+        sleep(0.3)
         game.get_board().move_piece(coords, coord_to_go)
 
         if coord_to_go not in game.get_board().adjacent(coords):
