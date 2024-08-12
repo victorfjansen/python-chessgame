@@ -4,7 +4,6 @@ from constants.directions import Directions
 import random
 
 class MediumEnemy(EnemyContract):
-
     def __init__(self):
         print("MEDIUM ENEMY SELECTED")
 

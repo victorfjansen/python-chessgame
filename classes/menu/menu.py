@@ -17,6 +17,6 @@ class MainMenu(MenuModel, MenuContract):
 
         menu.add.button('Jogar!', game.init_game_main_loop)
         menu.add.button('Sair', pygame_menu.events.EXIT)
-        menu.add.selector('Nível :', [('Fácil', DifficultyLevel.EASY.value), ('Médio', DifficultyLevel.HARD.value)],
+        menu.add.selector('Nível :', [('Fácil', DifficultyLevel.EASY.value), ('Médio', DifficultyLevel.MEDIUM.value), ('Difícil', DifficultyLevel.HARD.value)],
                           onchange=game.set_difficulty_level)
         menu.mainloop(self.get_surface())

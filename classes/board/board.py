@@ -42,6 +42,9 @@ class Board(BoardModel, BoardContract):
 
         return matrix
 
+    def copy(self):
+        return Board()
+
     def get_random_piece_with_adjacent(self, game) -> (Piece, (int, int), (int, int)):
         pieces_with_adjacent = []
         pieces_without_adjacent = []
@@ -95,19 +98,51 @@ class Board(BoardModel, BoardContract):
                                     self.position(Directions.NORTHWEST.value, (x, y))) and self.location(
                                     self.position(Directions.NORTHWEST.value, (x, y))).get_occupant()
 
-                                southwest = south_west_position and south_west_position.get_color() != game.get_enemy_turn() and self.on_board(self.position(Directions.SOUTHWEST.value, self.position(Directions.SOUTHWEST.value, (x, y)))) and not self.location(self.position(Directions.SOUTHWEST.value, self.position(Directions.SOUTHWEST.value, (x, y)))).get_occupant()
-                                southeast = south_heast_position and south_heast_position.get_color() != game.get_enemy_turn() and self.on_board(self.position(Directions.SOUTHEAST.value, self.position(Directions.SOUTHEAST.value, (x, y)))) and  not self.location(self.position(Directions.SOUTHEAST.value, self.position(Directions.SOUTHEAST.value, (x, y)))).get_occupant()
-                                northeast = north_heast_position and north_heast_position.get_color() != game.get_enemy_turn() and self.on_board(self.position(Directions.NORTHEAST.value, self.position(Directions.NORTHEAST.value, (x, y)))) and not self.location(self.position(Directions.NORTHEAST.value, self.position(Directions.NORTHEAST.value, (x, y)))).get_occupant()
-                                northwest = north_west_position and north_west_position.get_color() != game.get_enemy_turn() and self.on_board(self.position(Directions.NORTHWEST.value, self.position(Directions.NORTHWEST.value, (x, y)))) and not self.location(self.position(Directions.NORTHWEST.value, self.position(Directions.NORTHWEST.value, (x, y)))).get_occupant()
+                                southwest = south_west_position and south_west_position.get_color() != game.get_enemy_turn() and self.on_board(
+                                    self.position(Directions.SOUTHWEST.value, self.position(Directions.SOUTHWEST.value,
+                                                                                            (x,
+                                                                                             y)))) and not self.location(
+                                    self.position(Directions.SOUTHWEST.value,
+                                                  self.position(Directions.SOUTHWEST.value, (x, y)))).get_occupant()
+                                southeast = south_heast_position and south_heast_position.get_color() != game.get_enemy_turn() and self.on_board(
+                                    self.position(Directions.SOUTHEAST.value, self.position(Directions.SOUTHEAST.value,
+                                                                                            (x,
+                                                                                             y)))) and not self.location(
+                                    self.position(Directions.SOUTHEAST.value,
+                                                  self.position(Directions.SOUTHEAST.value, (x, y)))).get_occupant()
+                                northeast = north_heast_position and north_heast_position.get_color() != game.get_enemy_turn() and self.on_board(
+                                    self.position(Directions.NORTHEAST.value, self.position(Directions.NORTHEAST.value,
+                                                                                            (x,
+                                                                                             y)))) and not self.location(
+                                    self.position(Directions.NORTHEAST.value,
+                                                  self.position(Directions.NORTHEAST.value, (x, y)))).get_occupant()
+                                northwest = north_west_position and north_west_position.get_color() != game.get_enemy_turn() and self.on_board(
+                                    self.position(Directions.NORTHWEST.value, self.position(Directions.NORTHWEST.value,
+                                                                                            (x,
+                                                                                             y)))) and not self.location(
+                                    self.position(Directions.NORTHWEST.value,
+                                                  self.position(Directions.NORTHWEST.value, (x, y)))).get_occupant()
 
                                 if southwest:
-                                    pieces_with_adjacent.append(((x, y), self.position(Directions.SOUTHWEST.value, self.position(Directions.SOUTHWEST.value, (x, y))), piece))
+                                    pieces_with_adjacent.append(((x, y), self.position(Directions.SOUTHWEST.value,
+                                                                                       self.position(
+                                                                                           Directions.SOUTHWEST.value,
+                                                                                           (x, y))), piece))
                                 if southeast:
-                                    pieces_with_adjacent.append(((x, y), self.position(Directions.SOUTHEAST.value, self.position(Directions.SOUTHEAST.value, (x, y))), piece))
+                                    pieces_with_adjacent.append(((x, y), self.position(Directions.SOUTHEAST.value,
+                                                                                       self.position(
+                                                                                           Directions.SOUTHEAST.value,
+                                                                                           (x, y))), piece))
                                 if northwest:
-                                    pieces_with_adjacent.append(((x, y), self.position(Directions.NORTHWEST.value, self.position(Directions.NORTHWEST.value, (x, y))), piece))
+                                    pieces_with_adjacent.append(((x, y), self.position(Directions.NORTHWEST.value,
+                                                                                       self.position(
+                                                                                           Directions.NORTHWEST.value,
+                                                                                           (x, y))), piece))
                                 if northeast:
-                                    pieces_with_adjacent.append(((x, y), self.position(Directions.NORTHEAST.value, self.position(Directions.NORTHEAST.value, (x, y))), piece))
+                                    pieces_with_adjacent.append(((x, y), self.position(Directions.NORTHEAST.value,
+                                                                                       self.position(
+                                                                                           Directions.NORTHEAST.value,
+                                                                                           (x, y))), piece))
 
                         else:
                             pieces_without_adjacent.append(((x, y), legal_moves[0], piece))
@@ -135,6 +170,21 @@ class Board(BoardModel, BoardContract):
             return x + 1, y + 1
         else:
             return 0
+
+    def get_direction_from_coords(self, current_pos, to_go_pos):
+        try:
+            if (current_pos[0] - 1, current_pos[1] - 1) == to_go_pos:
+                return Directions.NORTHWEST.value
+            elif (current_pos[0] + 1, current_pos[1] - 1) == to_go_pos:
+                return Directions.NORTHWEST.value
+            elif (current_pos[0] - 1, current_pos[1] + 1) == to_go_pos:
+                return Directions.SOUTHWEST.value
+            elif (current_pos[0] + 1, current_pos[1] + 1) == to_go_pos:
+                return Directions.SOUTHEAST.value
+            else:
+                return None
+        except TypeError:
+            return None
 
     def adjacent(self, pixel):
         # retorna uma lista de posições adjacentes à posição fornecida

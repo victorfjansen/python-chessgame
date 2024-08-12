@@ -2,6 +2,7 @@ import sys
 import pygame
 
 from classes.enemy.easy_enemy import EasyEnemy
+from classes.enemy.hard_enemy import HardEnemy
 from classes.enemy.medium_enemy import MediumEnemy
 from classes.game.game_contract import GameContract
 from classes.game.game_model import GameModel
@@ -18,8 +19,10 @@ class Game(GameModel, GameContract):
     def setup_enemy(self):
         if self.get_difficulty_level() == DifficultyLevel.EASY.value:
             self.set_enemy(EasyEnemy())
-        else:
+        elif self.get_difficulty_level() == DifficultyLevel.MEDIUM.value:
             self.set_enemy(MediumEnemy())
+        else:
+            self.set_enemy(HardEnemy())
 
     def setup(self):
         self.get_graphics().setup_window()
