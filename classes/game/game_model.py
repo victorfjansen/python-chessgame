@@ -1,7 +1,9 @@
 from classes.board.board import Board
+from classes.enemy.enemy_contract import EnemyContract
 from classes.graphics.graphics import Graphics
 from classes.menu.menu import MainMenu
 from constants.colors import COLORS
+from constants.difficulty import DifficultyLevel
 
 
 class GameModel:
@@ -22,6 +24,12 @@ class GameModel:
         self.__selected_legal_moves = []
 
         self.__mouse_pos = None
+
+        self.__difficulty_level = DifficultyLevel.EASY.value
+        self.__enemy_turn = COLORS.RED.value
+
+        self.__enemy = None
+        self.__end_game = False
 
     def get_graphics(self):
         return self.__graphics
@@ -70,3 +78,30 @@ class GameModel:
 
     def get_main_menu(self):
         return self.__main_menu
+    
+    def set_difficulty_level(self, value, level):
+        self.__difficulty_level = level
+
+    def get_difficulty_level(self):
+        return self.__difficulty_level
+
+    def set_enemy_turn(self, enemy_turn):
+        self.__enemy_turn = enemy_turn
+
+    def get_enemy_turn(self):
+        return self.__enemy_turn
+
+    def set_enemy(self, enemy):
+        self.__enemy = enemy
+
+    def get_enemy(self) -> EnemyContract:
+        return self.__enemy
+
+    def set_end_game(self, value):
+        self.__end_game = value
+
+    def get_end_game(self):
+        return self.__end_game
+
+
+

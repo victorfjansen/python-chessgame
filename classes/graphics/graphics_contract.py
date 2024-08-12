@@ -11,10 +11,6 @@ class GraphicsContract(ABC):
         pass
 
     @abstractmethod
-    def draw_board_squares(self, board):
-        pass
-
-    @abstractmethod
     def draw_board_pieces(self, board):
         pass
 

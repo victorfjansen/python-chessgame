@@ -7,6 +7,10 @@ from classes.square.square import Square
 from constants.colors import COLORS
 from constants.directions import Directions
 
+from time import sleep
+
+import random
+
 
 class Board(BoardModel, BoardContract):
     def __init__(self):
@@ -38,6 +42,85 @@ class Board(BoardModel, BoardContract):
 
         return matrix
 
+    def get_random_piece_with_adjacent(self, game) -> (Piece, (int, int), (int, int)):
+        pieces_with_adjacent = []
+        pieces_without_adjacent = []
+
+        for x in range(8):
+            for y in range(8):
+                piece = self.get_matrix()[x][y].get_occupant()
+                if piece is not None and piece.get_color() == game.get_enemy_turn():
+                    legal_moves = self.legal_moves((x, y))
+                    if legal_moves:
+                        adjacent_squares = self.adjacent((x, y))
+                        has_adjacent_piece = [
+                            square for square in adjacent_squares
+                            if isinstance(square, tuple) and self.on_board(square) and
+                               self.location(square).get_occupant() is not None and
+                               self.location(square).get_occupant().get_color() != game.get_enemy_turn()
+                        ]
+
+                        if len(has_adjacent_piece) > 0:
+                            is_king_piece = (self.location((x, y)).get_occupant() and self.location((x, y))
+                                             .get_occupant().get_king())
+
+                            print(is_king_piece, "IS_KING_PIECE")
+
+                            if not is_king_piece:
+                                west_position = self.on_board(
+                                    self.position(Directions.SOUTHWEST.value, (x, y))) and self.location(
+                                    self.position(Directions.SOUTHWEST.value, (x, y))).get_occupant()
+                                southwest = west_position and west_position.get_color() != game.get_enemy_turn()
+
+                                if southwest:
+                                    pieces_with_adjacent.append(((x, y), legal_moves[0], piece))
+                                else:
+                                    position = legal_moves[1] if len(legal_moves) > 1 is not None else legal_moves[0]
+                                    pieces_with_adjacent.append(((x, y), position, piece))
+
+                            else:
+                                south_west_position = self.on_board(
+                                    self.position(Directions.SOUTHWEST.value, (x, y))) and self.location(
+                                    self.position(Directions.SOUTHWEST.value, (x, y))).get_occupant()
+
+                                south_heast_position = self.on_board(
+                                    self.position(Directions.SOUTHEAST.value, (x, y))) and self.location(
+                                    self.position(Directions.SOUTHEAST.value, (x, y))).get_occupant()
+
+                                north_heast_position = self.on_board(
+                                    self.position(Directions.NORTHEAST.value, (x, y))) and self.location(
+                                    self.position(Directions.NORTHEAST.value, (x, y))).get_occupant()
+
+                                north_west_position = self.on_board(
+                                    self.position(Directions.NORTHWEST.value, (x, y))) and self.location(
+                                    self.position(Directions.NORTHWEST.value, (x, y))).get_occupant()
+
+                                southwest = south_west_position and south_west_position.get_color() != game.get_enemy_turn() and self.on_board(self.position(Directions.SOUTHWEST.value, self.position(Directions.SOUTHWEST.value, (x, y)))) and not self.location(self.position(Directions.SOUTHWEST.value, self.position(Directions.SOUTHWEST.value, (x, y)))).get_occupant()
+                                southeast = south_heast_position and south_heast_position.get_color() != game.get_enemy_turn() and self.on_board(self.position(Directions.SOUTHEAST.value, self.position(Directions.SOUTHEAST.value, (x, y)))) and  not self.location(self.position(Directions.SOUTHEAST.value, self.position(Directions.SOUTHEAST.value, (x, y)))).get_occupant()
+                                northeast = north_heast_position and north_heast_position.get_color() != game.get_enemy_turn() and self.on_board(self.position(Directions.NORTHEAST.value, self.position(Directions.NORTHEAST.value, (x, y)))) and not self.location(self.position(Directions.NORTHEAST.value, self.position(Directions.NORTHEAST.value, (x, y)))).get_occupant()
+                                northwest = north_west_position and north_west_position.get_color() != game.get_enemy_turn() and self.on_board(self.position(Directions.NORTHWEST.value, self.position(Directions.NORTHWEST.value, (x, y)))) and not self.location(self.position(Directions.NORTHWEST.value, self.position(Directions.NORTHWEST.value, (x, y)))).get_occupant()
+
+                                if southwest:
+                                    pieces_with_adjacent.append(((x, y), self.position(Directions.SOUTHWEST.value, self.position(Directions.SOUTHWEST.value, (x, y))), piece))
+                                if southeast:
+                                    pieces_with_adjacent.append(((x, y), self.position(Directions.SOUTHEAST.value, self.position(Directions.SOUTHEAST.value, (x, y))), piece))
+                                if northwest:
+                                    pieces_with_adjacent.append(((x, y), self.position(Directions.NORTHWEST.value, self.position(Directions.NORTHWEST.value, (x, y))), piece))
+                                if northeast:
+                                    pieces_with_adjacent.append(((x, y), self.position(Directions.NORTHEAST.value, self.position(Directions.NORTHEAST.value, (x, y))), piece))
+
+                        else:
+                            pieces_without_adjacent.append(((x, y), legal_moves[0], piece))
+
+        if pieces_with_adjacent:
+            random_piece = random.choice(pieces_with_adjacent)
+            return random_piece[2], random_piece[1], random_piece[0]
+        elif pieces_without_adjacent:
+            random_piece = random.choice(pieces_without_adjacent)
+            return random_piece[2], random_piece[1], random_piece[0]
+        else:
+            return self.get_random_piece_with_adjacent(game)
+
     def position(self, direction, pixel):
         # Devolve as posições a partir da direção dada.
         x = pixel[0]
@@ -58,7 +141,7 @@ class Board(BoardModel, BoardContract):
         x = pixel[0]
         y = pixel[1]
 
-        return [self.position(Directions.NORTHEAST.value, (x, y)), self.position(Directions.NORTHWEST, (x, y)),
+        return [self.position(Directions.NORTHEAST.value, (x, y)), self.position(Directions.NORTHWEST.value, (x, y)),
                 self.position(Directions.SOUTHWEST.value, (x, y)),
                 self.position(Directions.SOUTHEAST.value, (x, y))]
 
@@ -122,8 +205,9 @@ class Board(BoardModel, BoardContract):
         else:  # se já jouve uma peça capturada. No caso, se sim.
             for move in blind_legal_moves:
                 if self.on_board(move) and self.location(move).get_occupant() is not None:
-                    if self.location(move).get_occupant().get_color() is not self.location((x, y)).get_occupant().get_color() and self.on_board(
-                            (move[0] + (move[0] - x), move[1] + (move[1] - y))) and self.location((move[0] + (
+                    if self.location(move).get_occupant().get_color() is not self.location(
+                            (x, y)).get_occupant().get_color() and self.on_board(
+                        (move[0] + (move[0] - x), move[1] + (move[1] - y))) and self.location((move[0] + (
                             move[0] - x), move[1] + (
                             move[1] - y))).get_occupant() is None:
                         legal_moves.append((move[0] + (move[0] - x), move[1] + (move[1] - y)))
@@ -147,6 +231,7 @@ class Board(BoardModel, BoardContract):
         self.remove_piece((start_x, start_y))
 
         self.verify_and_set_king((end_x, end_y))
+        sleep(0.1)
 
     def is_end_square(self, coords):
         # verifica se está no quadrado final (bordas)
@@ -157,6 +242,10 @@ class Board(BoardModel, BoardContract):
 
     def on_board(self, pixel):
         # verifica se de fato o quadrado está no board. Se não está "fora".
+
+        if pixel == 0:
+            return True
+
         x = pixel[0]
         y = pixel[1]
         if x < 0 or y < 0 or x > 7 or y > 7:

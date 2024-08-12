@@ -26,14 +26,6 @@ class Graphics(GraphicsModel, GraphicsContract):
         pygame.display.update()
         self.get_clock().tick(self.get_fps())
 
-    def draw_board_squares(self, board):
-        # "Desenha" os quadrados teóricos no display
-        for x in range(8):
-            for y in range(8):
-                pygame.draw.rect(self.get_screen(), board[x][y].color,
-                                 (x * self.get_square_size(), y * self.get_square_size(),
-                                  self.get_square_size(), self.get_square_size()), 8)
-
     def draw_board_pieces(self, board):
         # Desenha as peças no display
         red_pawn_image = "assets/pieces/red-pawn.png"

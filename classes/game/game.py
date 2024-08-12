@@ -1,9 +1,13 @@
 import sys
 import pygame
 
+from classes.enemy.easy_enemy import EasyEnemy
+from classes.enemy.medium_enemy import MediumEnemy
 from classes.game.game_contract import GameContract
 from classes.game.game_model import GameModel
 from constants.colors import COLORS
+from constants.difficulty import DifficultyLevel
+from time import sleep
 
 
 class Game(GameModel, GameContract):
@@ -11,8 +15,15 @@ class Game(GameModel, GameContract):
         pygame.font.init()
         GameModel.__init__(self)
 
+    def setup_enemy(self):
+        if self.get_difficulty_level() == DifficultyLevel.EASY.value:
+            self.set_enemy(EasyEnemy())
+        else:
+            self.set_enemy(MediumEnemy())
+
     def setup(self):
         self.get_graphics().setup_window()
+        self.setup_enemy()
 
     def event_loop(self):
 
@@ -29,12 +40,15 @@ class Game(GameModel, GameContract):
             if event.type == pygame.QUIT:
                 self.terminate_game()
 
+            if self.get_turn() == self.get_enemy_turn():
+                if not self.get_end_game():
+                    self.get_enemy().move_piece(self)
+
             # verifica se o evento é de clique
             if event.type == pygame.MOUSEBUTTONDOWN:
 
                 # verifica se uma peça foi capturada. Se não:
                 if not self.get_hop():
-
                     # faz a seleção da peça
                     if (self.get_board().location(self.get_mouse_pos()).get_occupant() is not None and
                             self.get_board().location(self.get_mouse_pos()).get_occupant().get_color() == self.get_turn()):
@@ -43,7 +57,6 @@ class Game(GameModel, GameContract):
                     # verifica se a peça selecionada e o movimento é um movimento que se possa fazer
                     elif self.get_selected_piece() is not None and self.get_mouse_pos() in self.get_board().legal_moves(
                             self.get_selected_piece()):
-
                         self.get_board().move_piece(self.get_selected_piece(), self.get_mouse_pos())
 
                         # se a posição selecionada não está adjacente (diagonal) da referência anterior,
@@ -126,4 +139,5 @@ class Game(GameModel, GameContract):
                     if self.get_board().legal_moves((x, y)):
                         return False
 
+        self.set_end_game(True)
         return True
