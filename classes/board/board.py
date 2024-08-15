@@ -6,11 +6,15 @@ from classes.piece.piece import Piece
 from classes.square.square import Square
 from constants.colors import COLORS
 from constants.directions import Directions
+from sounds.sounds import StaticSounds
+
+from collections import Counter
 
 class Board(BoardModel, BoardContract):
     def __init__(self):
         BoardModel.__init__(self)
         self.set_matrix(self.new_board())
+        StaticSounds.initialize_mixer()
 
     def new_board(self) -> List[List[None or int]]:
         # Inicializa os quadrados e coloca-os em matriz
@@ -161,6 +165,7 @@ class Board(BoardModel, BoardContract):
         end_x = pixel_end[0]
         end_y = pixel_end[1]
 
+        StaticSounds.play_movement_sound()
         self.get_matrix()[end_x][end_y].set_occupant(self.get_matrix()[start_x][start_y].get_occupant())
         self.remove_piece((start_x, start_y))
 
@@ -193,4 +198,27 @@ class Board(BoardModel, BoardContract):
         if self.location((x, y)).get_occupant() is not None:
             if (self.location((x, y)).get_occupant().get_color() == COLORS.BLUE.value and y == 0) or (
                     self.location((x, y)).get_occupant().get_color() == COLORS.RED.value and y == 7):
-                self.location((x, y)).get_occupant().set_king(True)
+                if not self.location((x, y)).get_occupant().get_king():
+                    StaticSounds.play_promote_piece_sound()
+                    self.location((x, y)).get_occupant().set_king(True)
+
+    def get_how_many_pieces_in_board(self) -> dict:
+        counter = Counter()
+        for x in reversed(range(8)):
+            for y in reversed(range(8)):
+                piece = self.get_matrix()[x][y].get_occupant()
+
+                if piece:
+                    counter[piece.get_color()] += 1
+
+        return dict(counter)
+
+    def get_player_pieces_position(self, game):
+        player_pieces_position = []
+        for x in range(8):
+            for y in range(8):
+                piece = self.get_matrix()[x][y].get_occupant()
+                if piece and piece.get_color() != game.get_enemy_turn():
+                    player_pieces_position.append((x, y))
+        return player_pieces_position
+

@@ -11,12 +11,17 @@ class MainMenu(MenuModel, MenuContract):
         pygame.init()
         MenuModel.__init__(self)
 
+    def has_data_on_store(self, game) -> bool:
+        return game.get_board_store().has_stored_data()
+
     def setup_menu(self, game):
         menu = pygame_menu.Menu('Selecione seu modo de jogo! ', 600, 600,
                                 theme=pygame_menu.themes.THEME_DARK)
 
         menu.add.button('Jogar!', game.init_game_main_loop)
+        menu.add.button('Retomar partida anterior!', game.load_stored_game)
+
         menu.add.button('Sair', pygame_menu.events.EXIT)
-        menu.add.selector('Nível :', [('Fácil', DifficultyLevel.EASY.value), ('Médio', DifficultyLevel.MEDIUM.value), ('Difícil', DifficultyLevel.HARD.value)],
+        menu.add.selector('Nível :', [('Fácil', DifficultyLevel.EASY.value), ('Médio', DifficultyLevel.MEDIUM.value),  ('LOCAL', DifficultyLevel.LOCAL.value)],
                           onchange=game.set_difficulty_level)
         menu.mainloop(self.get_surface())

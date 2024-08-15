@@ -2,6 +2,7 @@ from classes.board.board import Board
 from classes.enemy.enemy_contract import EnemyContract
 from classes.graphics.graphics import Graphics
 from classes.menu.menu import MainMenu
+from classes.store.board_store import BoardStore
 from constants.colors import COLORS
 from constants.difficulty import DifficultyLevel
 
@@ -30,6 +31,8 @@ class GameModel:
 
         self.__enemy = None
         self.__end_game = False
+
+        self.__board_store = BoardStore()
 
     def get_graphics(self):
         return self.__graphics
@@ -103,5 +106,5 @@ class GameModel:
     def get_end_game(self):
         return self.__end_game
 
-
-
+    def get_board_store(self):
+        return self.__board_store

@@ -2,10 +2,10 @@ import sys
 import pygame
 
 from classes.enemy.easy_enemy import EasyEnemy
-from classes.enemy.hard_enemy import HardEnemy
 from classes.enemy.medium_enemy import MediumEnemy
 from classes.game.game_contract import GameContract
 from classes.game.game_model import GameModel
+from classes.piece.piece import Piece
 from constants.colors import COLORS
 from constants.difficulty import DifficultyLevel
 from time import sleep
@@ -21,12 +21,11 @@ class Game(GameModel, GameContract):
             self.set_enemy(EasyEnemy())
         elif self.get_difficulty_level() == DifficultyLevel.MEDIUM.value:
             self.set_enemy(MediumEnemy())
-        else:
-            self.set_enemy(HardEnemy())
 
     def setup(self):
         self.get_graphics().setup_window()
-        self.setup_enemy()
+        if not self.get_difficulty_level() == DifficultyLevel.LOCAL.value:
+            self.setup_enemy()
 
     def event_loop(self):
 
@@ -43,9 +42,10 @@ class Game(GameModel, GameContract):
             if event.type == pygame.QUIT:
                 self.terminate_game()
 
-            if self.get_turn() == self.get_enemy_turn():
+            if self.get_turn() == self.get_enemy_turn() and not self.get_difficulty_level() == DifficultyLevel.LOCAL.value:
                 if not self.get_end_game():
                     self.get_enemy().move_piece(self)
+                    self.end_turn()
 
             # verifica se o evento é de clique
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -101,16 +101,40 @@ class Game(GameModel, GameContract):
         self.get_graphics().update_display(self.get_board(), self.get_selected_legal_moves(), self.get_selected_piece())
 
     def terminate_game(self):
-        # Quita e termina o jogo
+        if not self.get_end_game():
+            self.get_board_store().store_matrix(self.get_board().get_matrix(), self)
         pygame.quit()
         sys.exit()
 
     def main(self):
         self.get_main_menu().setup_menu(self)
 
+    def clean_board_store(self):
+        self.get_board_store().clear_stored_matrix()
+
+    def load_stored_game(self):
+        saved_game_dict = self.get_board_store().load_game_from_file()
+
+        if not len(saved_game_dict):
+            return
+
+        self.set_difficulty_level("", saved_game_dict['difficulty'])
+
+        for x in range(8):
+            for y in range(8):
+                self.get_board().remove_piece((x, y))
+
+        for piece_data in saved_game_dict['pieces_data']:
+            x = piece_data[0]
+            y = piece_data[1]
+            self.get_board().get_matrix()[x][y].set_occupant(Piece(piece_data[2], piece_data[-1]))
+
+        self.init_game_main_loop()
+
     def init_game_main_loop(self):
         # seta o window e interface gráfica
         self.setup()
+        self.clean_board_store()
 
         # loop principal
         while True:

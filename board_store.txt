@@ -1,0 +1,15 @@
+difficulty: 3 
+x: 0, y: 0, color: (255-0-0), king: False 
+x: 0, y: 6, color: (0-0-255), king: False 
+x: 1, y: 7, color: (0-0-255), king: False 
+x: 2, y: 2, color: (255-0-0), king: False 
+x: 3, y: 7, color: (0-0-255), king: False 
+x: 4, y: 0, color: (255-0-0), king: False 
+x: 4, y: 2, color: (0-0-255), king: True 
+x: 5, y: 1, color: (255-0-0), king: False 
+x: 5, y: 7, color: (0-0-255), king: False 
+x: 6, y: 0, color: (255-0-0), king: False 
+x: 6, y: 4, color: (0-0-255), king: False 
+x: 7, y: 1, color: (255-0-0), king: False 
+x: 7, y: 5, color: (0-0-255), king: False 
+x: 7, y: 7, color: (0-0-255), king: False 

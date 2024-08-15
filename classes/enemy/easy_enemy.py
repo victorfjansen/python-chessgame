@@ -57,8 +57,3 @@ class EasyEnemy(EnemyContract):
                 game.get_board().remove_piece(
                     ((game.get_selected_piece()[0] + legal_moves[0][0]) // 2,
                      (game.get_selected_piece()[1] + legal_moves[0][1]) // 2))
-
-                game.end_turn()
-            game.end_turn()
-        else:
-            game.end_turn()
