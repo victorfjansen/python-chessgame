@@ -103,6 +103,8 @@ class Game(GameModel, GameContract):
     def terminate_game(self):
         if not self.get_end_game():
             self.get_board_store().store_matrix(self.get_board().get_matrix(), self)
+        else:
+            self.get_board_store().clear_stored_matrix()
         pygame.quit()
         sys.exit()
 
@@ -158,12 +160,16 @@ class Game(GameModel, GameContract):
                 self.get_graphics().draw_message("CINZA GANHOU!")
 
     def check_for_endgame(self):
+        board = self.get_board()
+        turn_color = self.get_turn()
+
         for x in range(8):
             for y in range(8):
-                if (self.get_board().location((x, y)).get_color() == COLORS.BLACK.value and self.get_board().location(
-                        (x, y)).get_occupant() is not None and
-                        self.get_board().location((x, y)).get_occupant().get_color() == self.get_turn()):
-                    if self.get_board().legal_moves((x, y)):
+                location = board.location((x, y))
+                occupant = location.get_occupant()
+
+                if occupant is not None and occupant.get_color() == turn_color:
+                    if board.legal_moves((x, y)):
                         return False
 
         self.set_end_game(True)

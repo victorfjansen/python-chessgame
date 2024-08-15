@@ -232,20 +232,25 @@ class MediumEnemy(EnemyContract):
     def manhattan_distance(self, first_position, second_position):
         return abs(first_position[0] - second_position[0]) + abs(first_position[1] - second_position[1])
 
-    def moves_in_player_piece_direction(self, coords_enemy_moves, coords_player_pieces):
+    def moves_in_player_piece_direction(self, game, original_position, coords_enemy_moves, coords_player_pieces):
         best_movement = None
+        priority_move = None
         lower_distance = float('inf')
+        adjacent_positions = game.get_board().adjacent(original_position)
 
         for movement in coords_enemy_moves:
             for player in coords_player_pieces:
                 distance = self.manhattan_distance(movement, player)
+                if movement not in adjacent_positions:
+                    priority_move = movement
                 if distance < lower_distance:
                     lower_distance = distance
                     best_movement = movement
 
-        return best_movement
+        return best_movement, priority_move
 
     def get_random_piece_with_approximation(self, board, game) -> (Piece, (int, int), (int, int)):
+        priority_moves = []
         approximation_moves = []
         player_pieces = board.get_player_pieces_position(game)
 
@@ -255,8 +260,15 @@ class MediumEnemy(EnemyContract):
                 if piece is not None and piece.get_color() == game.get_enemy_turn():
                     legal_moves = board.legal_moves((x, y))
                     if legal_moves:
-                        approximation_moves.append(((x, y), self.moves_in_player_piece_direction(legal_moves, player_pieces), piece))
+                        approximation_move, priority_move = self.moves_in_player_piece_direction(game, (x,y) ,legal_moves, player_pieces)
+                        if priority_move:
+                            priority_moves.append(((x, y), priority_move, piece))
 
+                        approximation_moves.append(((x, y), approximation_move, piece))
+
+        if len(priority_moves) >= 1:
+            random_piece = random.choice(priority_moves)
+            return random_piece[2], random_piece[1], random_piece[0]  # selected_piece, coord_to_go, coords
         if approximation_moves:
             random_piece = random.choice(approximation_moves)
             return random_piece[2], random_piece[1], random_piece[0]  # selected_piece, coord_to_go, coords
@@ -265,7 +277,13 @@ class MediumEnemy(EnemyContract):
 
 
     def move_piece(self, game):
-        coords_data = self.get_random_piece_with_adjacent(game.get_board(), game)
+        coords_data = None
+        player_pieces_in_board_qtt = game.get_board().get_how_many_pieces_in_board()[COLORS.BLUE.value]
+
+        if player_pieces_in_board_qtt <= 4:
+            coords_data = self.get_random_piece_with_approximation(game.get_board(), game)
+        else:
+            coords_data = self.get_random_piece_with_adjacent(game.get_board(), game)
 
         if not coords_data:
             selected_piece, coord_to_go, coords = self.get_random_piece_with_legal_moves(game.get_board(), game)
@@ -294,14 +312,22 @@ class MediumEnemy(EnemyContract):
 
             should_get_next_hop = self.should_get_next_hop(game, game.get_board(), game.get_selected_piece())
 
-            if should_get_next_hop and len(should_get_next_hop) > 0:
+            has_hop = should_get_next_hop and len(should_get_next_hop) > 0
+
+            while has_hop:
                 # faz a movimentação da peça
 
-                game.set_selected_legal_moves([should_get_next_hop[0][1]])
+                to_go_piece_coord = should_get_next_hop[0][1]
+
+                game.set_selected_legal_moves([to_go_piece_coord])
                 game.update()
                 sleep(0.3)
 
-                game.get_board().move_piece(game.get_selected_piece(), should_get_next_hop[0][1])
+                game.get_board().move_piece(game.get_selected_piece(), to_go_piece_coord)
                 game.get_board().remove_piece(
-                    ((game.get_selected_piece()[0] + should_get_next_hop[0][1][0]) // 2,
-                     (game.get_selected_piece()[1] + should_get_next_hop[0][1][1]) // 2))
+                    ((game.get_selected_piece()[0] + to_go_piece_coord[0]) // 2,
+                     (game.get_selected_piece()[1] + to_go_piece_coord[1]) // 2))
+
+                game.set_selected_piece(to_go_piece_coord)
+                should_get_next_hop = self.should_get_next_hop(game, game.get_board(), to_go_piece_coord)
+                has_hop = should_get_next_hop and len(should_get_next_hop) > 0

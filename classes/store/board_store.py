@@ -13,16 +13,16 @@ class BoardStore(StoreFactory):
 
     def store_matrix(self, matrix, game):
         game_difficulty = f"difficulty: {game.get_difficulty_level()} \n"
-        self.store(BOARD_MATRIX_KEY, self.get_filepath(), game_difficulty)
+        self._store(BOARD_MATRIX_KEY, self.get_filepath(), game_difficulty)
         for x in range(8):
             for y in range(8):
                 piece = matrix[x][y].get_occupant()
                 if piece:
                     formated_string = f"x: {x}, y: {y}, color: {self.formatted_color(piece.get_color())}, king: {piece.get_king()} \n"
-                    self.store(BOARD_MATRIX_KEY, self.get_filepath(), formated_string)
+                    self._store(BOARD_MATRIX_KEY, self.get_filepath(), formated_string)
 
     def clear_stored_matrix(self):
-        self.clear_all(self.get_filepath())
+        self._clear_all(self.get_filepath())
 
     def get_data_from_file(self, file_path, data_dict):
         with open(file_path, 'r') as file:
@@ -47,10 +47,10 @@ class BoardStore(StoreFactory):
                         data_dict["pieces_data"] += info_from_file
 
     def load_game_from_file(self):
-        return self.get_data_from_store(self.get_filepath(), self.get_data_from_file)
+        return self._get_data_from_store(self.get_filepath(), self.get_data_from_file)
 
     def has_stored_data(self):
-        return self.has_data_on_store(self.get_filepath())
+        return self._has_data_on_store(self.get_filepath())
 
     def get_filepath(self):
         return self.__filepath

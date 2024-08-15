@@ -19,7 +19,9 @@ class MainMenu(MenuModel, MenuContract):
                                 theme=pygame_menu.themes.THEME_DARK)
 
         menu.add.button('Jogar!', game.init_game_main_loop)
-        menu.add.button('Retomar partida anterior!', game.load_stored_game)
+
+        if game.get_board_store().has_stored_data():
+            menu.add.button('Retomar partida anterior!', game.load_stored_game)
 
         menu.add.button('Sair', pygame_menu.events.EXIT)
         menu.add.selector('Nível :', [('Fácil', DifficultyLevel.EASY.value), ('Médio', DifficultyLevel.MEDIUM.value),  ('LOCAL', DifficultyLevel.LOCAL.value)],
