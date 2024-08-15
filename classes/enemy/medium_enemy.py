@@ -82,16 +82,21 @@ class MediumEnemy(EnemyContract):
                                              .get_occupant().get_king())
 
                             if not is_king_piece:
-                                west_position = board.on_board(
+                                south_west_position = board.on_board(
                                     board.position(Directions.SOUTHWEST.value, (x, y))) and board.location(
                                     board.position(Directions.SOUTHWEST.value, (x, y))).get_occupant()
-                                southwest = west_position and west_position.get_color() != game.get_enemy_turn()
+
+                                south_heast_position = board.on_board(
+                                    board.position(Directions.SOUTHEAST.value, (x, y))) and board.location(
+                                    board.position(Directions.SOUTHEAST.value, (x, y))).get_occupant()
+                                
+                                southwest = south_west_position and south_west_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y)))) and not board.location(board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y)))).get_occupant()
+                                southeast = south_heast_position and south_heast_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y)))) and not board.location(board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y)))).get_occupant()
 
                                 if southwest:
-                                    pieces_with_adjacent.append(((x, y), legal_moves[0], piece))
-                                else:
-                                    position = legal_moves[1] if len(legal_moves) > 1 else legal_moves[0]
-                                    pieces_with_adjacent.append(((x, y), position, piece))
+                                    pieces_with_adjacent.append(((x, y), board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y))), piece))
+                                if southeast:
+                                    pieces_with_adjacent.append(((x, y), board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y))), piece))
 
                             else:
                                 south_west_position = board.on_board(
@@ -291,7 +296,7 @@ class MediumEnemy(EnemyContract):
         coords_data = None
         player_pieces_in_board_qtt = game.get_board().get_how_many_pieces_in_board()[COLORS.BLUE.value]
 
-        if player_pieces_in_board_qtt <= 2:
+        if player_pieces_in_board_qtt <= 3:
             coords_data = self.get_random_piece_with_approximation(game.get_board(), game)
         else:
             coords_data = self.get_random_piece_with_adjacent(game.get_board(), game)
