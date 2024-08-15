@@ -291,7 +291,7 @@ class MediumEnemy(EnemyContract):
         coords_data = None
         player_pieces_in_board_qtt = game.get_board().get_how_many_pieces_in_board()[COLORS.BLUE.value]
 
-        if player_pieces_in_board_qtt <= 4:
+        if player_pieces_in_board_qtt <= 2:
             coords_data = self.get_random_piece_with_approximation(game.get_board(), game)
         else:
             coords_data = self.get_random_piece_with_adjacent(game.get_board(), game)
