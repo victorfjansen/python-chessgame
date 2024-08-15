@@ -236,44 +236,55 @@ class MediumEnemy(EnemyContract):
         best_movement = None
         priority_move = None
         lower_distance = float('inf')
-        adjacent_positions = game.get_board().adjacent(original_position)
+        adjacent_positions = set(game.get_board().adjacent(original_position))  # Using a set for O(1) lookups
 
         for movement in coords_enemy_moves:
+            is_priority_move = movement not in adjacent_positions
+
             for player in coords_player_pieces:
                 distance = self.manhattan_distance(movement, player)
-                if movement not in adjacent_positions:
-                    priority_move = movement
+
                 if distance < lower_distance:
                     lower_distance = distance
                     best_movement = movement
+
+                if is_priority_move:
+                    priority_move = movement
+
+            if lower_distance == 1:
+                break
 
         return best_movement, priority_move
 
     def get_random_piece_with_approximation(self, board, game) -> (Piece, (int, int), (int, int)):
         priority_moves = []
         approximation_moves = []
+        enemy_color = game.get_enemy_turn()
         player_pieces = board.get_player_pieces_position(game)
+        board_matrix = board.get_matrix()
 
         for x in range(8):
             for y in range(8):
-                piece = board.get_matrix()[x][y].get_occupant()
-                if piece is not None and piece.get_color() == game.get_enemy_turn():
+                piece = board_matrix[x][y].get_occupant()
+                if piece is not None and piece.get_color() == enemy_color:
                     legal_moves = board.legal_moves((x, y))
                     if legal_moves:
-                        approximation_move, priority_move = self.moves_in_player_piece_direction(game, (x,y) ,legal_moves, player_pieces)
+                        approximation_move, priority_move = self.moves_in_player_piece_direction(
+                            game, (x, y), legal_moves, player_pieces
+                        )
                         if priority_move:
                             priority_moves.append(((x, y), priority_move, piece))
-
                         approximation_moves.append(((x, y), approximation_move, piece))
 
-        if len(priority_moves) >= 1:
+        if priority_moves:
             random_piece = random.choice(priority_moves)
             return random_piece[2], random_piece[1], random_piece[0]  # selected_piece, coord_to_go, coords
+
         if approximation_moves:
             random_piece = random.choice(approximation_moves)
             return random_piece[2], random_piece[1], random_piece[0]  # selected_piece, coord_to_go, coords
-        else:
-            return None  # Nenhuma peça tem movimentos legais
+
+        return None
 
 
     def move_piece(self, game):
@@ -294,7 +305,7 @@ class MediumEnemy(EnemyContract):
         game.set_selected_legal_moves([coord_to_go])
 
         game.update()
-        sleep(0.3)
+        sleep(0.2)
         game.get_board().move_piece(coords, coord_to_go)
 
         if coord_to_go not in game.get_board().adjacent(coords):
