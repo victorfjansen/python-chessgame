@@ -32,8 +32,6 @@ class GameModel:
         self.__enemy = None
         self.__end_game = False
 
-        self.__board_store = BoardStore()
-
     def get_graphics(self):
         return self.__graphics
 
@@ -105,6 +103,3 @@ class GameModel:
 
     def get_end_game(self):
         return self.__end_game
-
-    def get_board_store(self):
-        return self.__board_store

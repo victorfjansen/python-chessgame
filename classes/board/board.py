@@ -41,9 +41,6 @@ class Board(BoardModel, BoardContract):
 
         return matrix
 
-    def copy(self):
-        return Board()
-
     def position(self, direction, pixel):
         # Devolve as posições a partir da direção dada.
         x = pixel[0]

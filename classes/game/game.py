@@ -8,7 +8,6 @@ from classes.game.game_model import GameModel
 from classes.piece.piece import Piece
 from constants.colors import COLORS
 from constants.difficulty import DifficultyLevel
-from time import sleep
 
 
 class Game(GameModel, GameContract):
@@ -102,9 +101,9 @@ class Game(GameModel, GameContract):
 
     def terminate_game(self):
         if not self.get_end_game():
-            self.get_board_store().store_matrix(self.get_board().get_matrix(), self)
+            self.get_board().get_board_store().store_matrix(self.get_board().get_matrix(), self)
         else:
-            self.get_board_store().clear_stored_matrix()
+            self.get_board().get_board_store().clear_stored_matrix()
         pygame.quit()
         sys.exit()
 
@@ -112,10 +111,10 @@ class Game(GameModel, GameContract):
         self.get_main_menu().setup_menu(self)
 
     def clean_board_store(self):
-        self.get_board_store().clear_stored_matrix()
+        self.get_board().get_board_store().clear_stored_matrix()
 
     def load_stored_game(self):
-        saved_game_dict = self.get_board_store().load_game_from_file()
+        saved_game_dict = self.get_board().get_board_store().load_game_from_file()
 
         if not len(saved_game_dict):
             return

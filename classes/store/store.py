@@ -1,6 +1,4 @@
 import os
-import random
-
 
 class StoreFactory:
     def __init__(self) -> None:

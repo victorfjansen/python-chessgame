@@ -30,3 +30,15 @@ class GameContract(ABC):
     @abstractmethod
     def check_for_endgame(self):
         pass
+
+    @abstractmethod
+    def clean_board_store(self):
+        pass
+
+    @abstractmethod
+    def load_stored_game():
+        pass
+
+    @abstractmethod
+    def setup_enemy():
+        pass

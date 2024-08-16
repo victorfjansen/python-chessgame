@@ -46,3 +46,11 @@ class BoardContract(ABC):
     @abstractmethod
     def verify_and_set_king(self, pixel):
         pass
+
+    @abstractmethod
+    def get_how_many_pieces_in_board() -> dict:
+        pass
+
+    @abstractmethod
+    def get_player_pieces_position(game):
+        pass

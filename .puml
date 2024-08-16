@@ -27,6 +27,16 @@ package GameEntity <<Frame>> {
         + set_selected_legal_moves(selected_legal_moves: [][]): void
         + get_mouse_pos(): int[]
         + set_mouse_pos(mouse_pos: int[]): void
+        + set_main_menu(main_menu: MainMenu): void
+        + get_main_menu(): MainMenu
+        + set_difficulty_level(value, level: number): void
+        + get_difficulty_level(self): number
+        + set_enemy_turn(enemy_turn): void
+        + get_enemy_turn(): number
+        + set_enemy(enemy: EnemyContract): void
+        + get_enemy(): EnemyContract
+        + set_end_game(end_game: boolean): void
+        + get_end_game(): boolean
     }
 
     abstract class GameContract {
@@ -37,7 +47,24 @@ package GameEntity <<Frame>> {
         + main(): void
         + end_turn(): void
         + check_for_endgame(): boolean
+        + clean_board_store(): void
+        + load_stored_game(): void
+        + setup_enemy(): void
     }
+
+    class MainMenu {}
+
+    class MenuContract {
+        + has_data_on_store(): boolean
+        + setup_menu(game): void
+    }
+
+    class MenuModel {
+        - __surface: Surface
+        + get_surface(): Surface
+        + set_surface(value: Surface): void
+    }
+
 }
 
 package GraphicsEntity <<Frame>> {
@@ -125,8 +152,10 @@ package SquareEntity <<Frame>>{
 package BoardEntity <<Frame>> {
     class BoardModel {
         - _matrix: List[List[None or int]]
+        - __board_store: BoardStore
         + get_matrix(): List[List[None or int]]
         + set_matrix(matrix: List[List[None or int]]): void
+        + get_board_store(): BoardStore
     }
 
     abstract class BoardContract {
@@ -141,11 +170,61 @@ package BoardEntity <<Frame>> {
         + is_end_square(coords: List[]): void
         + on_board(pixel: tuple[int]): void
         + verify_and_set_king(pixel: tuple[int]): void
+        + get_direction_from_coors(current_pos: tuple[int], to_go_pos: tuple[int]): Directions
+        + get_how_many_pieces_in_board(): dict
+        + get_player_pieces_position(game: Game): List[tuple[int]]
     }
 
     class Board {}
+
+    class BoardStore {
+        + formatted_color(color: tuple[int, int, int]): str
+        + store_matrix(matrix: List[List[int]], game: Game): void
+        + clear_stored_matrix(): void
+        + get_data_from_file(): void
+        + load_game_from_file(): dict
+        + has_stored_data(): bool
+        + get_filepath(): str
+    }
+}
+
+package Store <<Frame>> {
+    class StoreFactory {
+        # _store(key: srt, file_path: str, value: str): void
+        # _get_data_from_store(file_path: str, callback_action: () => void): dict
+        # _delete_from_store(key:  str): void
+        # _clear_all(file_path: str): void
+        # _file_path_exists(file_path: str): boolean
+        # _has_data_on_store(file_path: str): boolean
+        # _get_store(): dict
+    }
+}
+
+package Enemy <<Frame>> {
+    class EnemyContract {
+        + move_piece(game: Game): void
+        + get_random_piece_with_legal_moves(board: Board, game: Game): tuple[Piece, (int, int), (int, int)]
+    }
+
+    class EasyEnemy {
+    }
+
+    class MediumEnemy {
+        + get_better_movement_without_adjacent(board: Board, pieces_without_adjacent: List[tuple[int, int]]): tuple[int, int]
+        + get_random_piece_with_adjacent(board: Board, game: Game): tuple[Piece, (int, int), (int, int)]
+        + should_get_next_hop(game: Game, board: Board, tuple[int, int])
+        + manhattan_distance(tuple[int, int], tuple[int, int]): int
+        + moves_in_player_piece_direction(game: Game, original_position: tuple[int, int], coords_enemy_moves: List[tuple[int, int]], coords_player_pieces:List[tuple[int, int]]): List[tuple[int, int]]
+        + get_random_piece_with_approximation(board: Board, game: Game): tuple[Piece, (int, int), (int, int)]
+    }
 }
 }
+
+EasyEnemy --|> EnemyContract : herda
+MediumEnemy --|> EnemyContract : herda
+
+MainMenu -right-|> MenuModel : herda
+MainMenu -left-|> MenuContract : herda
 
 Board -right-|> BoardModel : herda
 Board -left-|> BoardContract : herda
@@ -156,16 +235,22 @@ Game -left-|> GameContract : herda
 Graphics -left-|> GraphicsContract : herda
 Graphics -right-|> GraphicsModel : herda
 
+Game -- MainMenu
+BoardStore --|> StoreFactory
+
+Board *--> BoardStore
+
 Piece -right-|> PieceModel : herda
 
 Square -right-|> SquareModel : herda
 
-Square "1" *-- "1" Piece : contém
+Square "1" *--> "1" Piece : contém
 
-Board "1" *-- "1..*" Square : contém
+Board "1" *--> "1..*" Square : contém
 
-Graphics "1" o-- "0..*" Board : contém
+Graphics "1" o--> "0..*" Board : contém
 
-Game "1" *-- "1" Graphics : contém
+Game "1" *--> "1" Graphics : contém
+Game "1" *-up-> "1" EnemyContract
 
 @enduml
