@@ -34,28 +34,45 @@ class MediumEnemy(EnemyContract):
             coord_to_go = movement[1]
 
             direction = board.get_direction_from_coords(current_position, coord_to_go)
-
-            next_direction_position = board.on_board(
-                board.position(direction, coord_to_go)) and board.location(
-                board.position(direction, coord_to_go)).get_occupant()
+            next_position_enemy_occupant = board.on_board(
+                board.position(direction, coord_to_go)
+            ) and board.location(board.position(direction, coord_to_go)).get_occupant() and board.location(
+                    board.position(direction, coord_to_go)).get_occupant().get_color() == COLORS.BLUE.value
 
             direction_correspondent = None
 
             if direction == Directions.SOUTHWEST.value:
                 direction_correspondent = board.on_board(
                     board.position(Directions.SOUTHEAST.value, coord_to_go)) and board.location(
-                    board.position(Directions.SOUTHEAST.value, coord_to_go)).get_occupant()
+                    board.position(Directions.SOUTHEAST.value, coord_to_go)).get_occupant() and board.location(
+                    board.position(Directions.SOUTHEAST.value, coord_to_go)).get_occupant().get_color() == COLORS.BLUE.value
 
             if direction == Directions.SOUTHEAST.value:
                 direction_correspondent = board.on_board(
                     board.position(Directions.SOUTHWEST.value, coord_to_go)) and board.location(
-                    board.position(Directions.SOUTHWEST.value, coord_to_go)).get_occupant()
+                    board.position(Directions.SOUTHWEST.value, coord_to_go)).get_occupant() and board.location(
+                    board.position(Directions.SOUTHWEST.value, coord_to_go)).get_occupant().get_color() == COLORS.BLUE.value
+                
+            if direction == Directions.NORTHEAST.value:
+                direction_correspondent = board.on_board(
+                    board.position(Directions.NORTHEAST.value, coord_to_go)) and board.location(
+                    board.position(Directions.NORTHEAST.value, coord_to_go)).get_occupant() and board.location(
+                    board.position(Directions.NORTHEAST.value, coord_to_go)).get_occupant().get_color() == COLORS.BLUE.value
+                
+            if direction == Directions.NORTHWEST.value:
+                direction_correspondent = board.on_board(
+                    board.position(Directions.NORTHWEST.value, coord_to_go)) and board.location(
+                    board.position(Directions.NORTHWEST.value, coord_to_go)).get_occupant() and board.location(
+                    board.position(Directions.NORTHWEST.value, coord_to_go)).get_occupant().get_color() == COLORS.BLUE.value
 
-            if not next_direction_position and not direction_correspondent:
+
+            if not direction_correspondent and not next_position_enemy_occupant:
                 better_movement.append(movement)
 
+            # verificação final para adicionar algum movimento
             if len(better_movement) == 0 and movement == pieces_without_adjacent[-1]:
                 better_movement.append(movement)
+
         return better_movement
 
 
@@ -80,46 +97,35 @@ class MediumEnemy(EnemyContract):
                         if len(has_adjacent_piece) > 0:
                             is_king_piece = (board.location((x, y)).get_occupant() and board.location((x, y))
                                              .get_occupant().get_king())
+                            
+                            south_west_position = board.on_board(
+                                board.position(Directions.SOUTHWEST.value, (x, y))) and board.location(
+                                board.position(Directions.SOUTHWEST.value, (x, y))).get_occupant()
+
+                            south_heast_position = board.on_board(
+                                board.position(Directions.SOUTHEAST.value, (x, y))) and board.location(
+                                board.position(Directions.SOUTHEAST.value, (x, y))).get_occupant()
+
+                            north_heast_position = board.on_board(
+                                board.position(Directions.NORTHEAST.value, (x, y))) and board.location(
+                                board.position(Directions.NORTHEAST.value, (x, y))).get_occupant()
+
+                            north_west_position = board.on_board(
+                                board.position(Directions.NORTHWEST.value, (x, y))) and board.location(
+                                board.position(Directions.NORTHWEST.value, (x, y))).get_occupant()
+                            
+                            southwest = south_west_position and south_west_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y)))) and not board.location(board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y)))).get_occupant()
+                            southeast = south_heast_position and south_heast_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y)))) and not board.location(board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y)))).get_occupant()
+                            northeast = north_heast_position and north_heast_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.NORTHEAST.value, board.position(Directions.NORTHEAST.value, (x, y)))) and not board.location(board.position(Directions.NORTHEAST.value, board.position(Directions.NORTHEAST.value, (x, y)))).get_occupant()
+                            northwest = north_west_position and north_west_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.NORTHWEST.value, board.position(Directions.NORTHWEST.value, (x, y)))) and not board.location(board.position(Directions.NORTHWEST.value, board.position(Directions.NORTHWEST.value, (x, y)))).get_occupant()
 
                             if not is_king_piece:
-                                south_west_position = board.on_board(
-                                    board.position(Directions.SOUTHWEST.value, (x, y))) and board.location(
-                                    board.position(Directions.SOUTHWEST.value, (x, y))).get_occupant()
-
-                                south_heast_position = board.on_board(
-                                    board.position(Directions.SOUTHEAST.value, (x, y))) and board.location(
-                                    board.position(Directions.SOUTHEAST.value, (x, y))).get_occupant()
-                                
-                                southwest = south_west_position and south_west_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y)))) and not board.location(board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y)))).get_occupant()
-                                southeast = south_heast_position and south_heast_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y)))) and not board.location(board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y)))).get_occupant()
-
                                 if southwest:
                                     pieces_with_adjacent.append(((x, y), board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y))), piece))
                                 if southeast:
                                     pieces_with_adjacent.append(((x, y), board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y))), piece))
 
                             else:
-                                south_west_position = board.on_board(
-                                    board.position(Directions.SOUTHWEST.value, (x, y))) and board.location(
-                                    board.position(Directions.SOUTHWEST.value, (x, y))).get_occupant()
-
-                                south_heast_position = board.on_board(
-                                    board.position(Directions.SOUTHEAST.value, (x, y))) and board.location(
-                                    board.position(Directions.SOUTHEAST.value, (x, y))).get_occupant()
-
-                                north_heast_position = board.on_board(
-                                    board.position(Directions.NORTHEAST.value, (x, y))) and board.location(
-                                    board.position(Directions.NORTHEAST.value, (x, y))).get_occupant()
-
-                                north_west_position = board.on_board(
-                                    board.position(Directions.NORTHWEST.value, (x, y))) and board.location(
-                                    board.position(Directions.NORTHWEST.value, (x, y))).get_occupant()
-
-                                southwest = south_west_position and south_west_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y)))) and not board.location(board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y)))).get_occupant()
-                                southeast = south_heast_position and south_heast_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y)))) and not board.location(board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y)))).get_occupant()
-                                northeast = north_heast_position and north_heast_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.NORTHEAST.value, board.position(Directions.NORTHEAST.value, (x, y)))) and not board.location(board.position(Directions.NORTHEAST.value, board.position(Directions.NORTHEAST.value, (x, y)))).get_occupant()
-                                northwest = north_west_position and north_west_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.NORTHWEST.value, board.position(Directions.NORTHWEST.value, (x, y)))) and not board.location(board.position(Directions.NORTHWEST.value, board.position(Directions.NORTHWEST.value, (x, y)))).get_occupant()
-
                                 if southwest:
                                     pieces_with_adjacent.append(((x, y), board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y))), piece))
                                 if southeast:
@@ -286,7 +292,7 @@ class MediumEnemy(EnemyContract):
             return random_piece[2], random_piece[1], random_piece[0]  # selected_piece, coord_to_go, coords
 
         if approximation_moves:
-            random_piece = random.choice(approximation_moves)
+            random_piece = random.choice(self.get_better_movement_without_adjacent(board, approximation_moves))
             return random_piece[2], random_piece[1], random_piece[0]  # selected_piece, coord_to_go, coords
 
         return None
