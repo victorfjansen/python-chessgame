@@ -87,7 +87,9 @@ class Board(BoardModel, BoardContract):
         return self.get_matrix()[x][y]
 
     def blind_legal_moves(self, pixel):
-        # Retorna uma lista de movimentos que podem ser feitos, mas ainda não foram jogados
+        # Retorna uma lista de possíveis movimentos a serem feitos, porém podem conter peças no meio que não permitam o movimento.
+        # "Blind" --> Movimento cego
+
         x = pixel[0]
         y = pixel[1]
         if self.get_matrix()[x][y].get_occupant() is not None:
@@ -123,13 +125,12 @@ class Board(BoardModel, BoardContract):
 
         if not hop:  # se já jouve uma peça capturada. No caso, se não.
             for move in blind_legal_moves:
-                if not hop:
                     if self.on_board(move):
                         if self.location(move).get_occupant() is None:
                             legal_moves.append(move)
 
-                        # verifica as posições possíveis para movimentação
-                        # se está no board, se há outra peça no local, se há outra peça da mesma cor
+                        # SE a cor da peça para fazer o movimento é diferente da atual
+                        # SE o movimento a diante (pulando uma peça) é possível 
                         elif self.location(move).get_occupant().get_color() != self.location(
                                 (x, y)).get_occupant().get_color() and self.on_board(
                             (move[0] + (move[0] - x), move[1] + (move[1] - y))) and self.location((move[0] + (
@@ -139,7 +140,10 @@ class Board(BoardModel, BoardContract):
 
         else:  # se já jouve uma peça capturada. No caso, se sim.
             for move in blind_legal_moves:
+                # Se está no board
+                # Se o próximo movimento não é none
                 if self.on_board(move) and self.location(move).get_occupant() is not None:
+                    # Se o ocupante do movimento não é da mesma cor da peça (visando poder comer a peça)
                     if self.location(move).get_occupant().get_color() is not self.location(
                             (x, y)).get_occupant().get_color() and self.on_board(
                         (move[0] + (move[0] - x), move[1] + (move[1] - y))) and self.location((move[0] + (

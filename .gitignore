@@ -7,3 +7,6 @@ __pycache__/*.pyc
 venv
 
 *.pyc
+
+./board_store.txt
+board_store.txt

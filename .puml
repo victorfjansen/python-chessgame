@@ -235,7 +235,7 @@ Game -left-|> GameContract : herda
 Graphics -left-|> GraphicsContract : herda
 Graphics -right-|> GraphicsModel : herda
 
-Game -- MainMenu
+Game *--> MainMenu
 BoardStore --|> StoreFactory
 
 Board *--> BoardStore
@@ -244,7 +244,7 @@ Piece -right-|> PieceModel : herda
 
 Square -right-|> SquareModel : herda
 
-Square "1" *--> "1" Piece : contém
+Square "1" o--> "1" Piece : contém
 
 Board "1" *--> "1..*" Square : contém
 
@@ -252,5 +252,7 @@ Graphics "1" o--> "0..*" Board : contém
 
 Game "1" *--> "1" Graphics : contém
 Game "1" *-up-> "1" EnemyContract
+
+Game -- Piece
 
 @enduml

@@ -120,10 +120,16 @@ class MediumEnemy(EnemyContract):
                             northwest = north_west_position and north_west_position.get_color() != game.get_enemy_turn() and board.on_board(board.position(Directions.NORTHWEST.value, board.position(Directions.NORTHWEST.value, (x, y)))) and not board.location(board.position(Directions.NORTHWEST.value, board.position(Directions.NORTHWEST.value, (x, y)))).get_occupant()
 
                             if not is_king_piece:
+                                west_position = board.on_board(
+                                    board.position(Directions.SOUTHWEST.value, (x, y))) and board.location(
+                                    board.position(Directions.SOUTHWEST.value, (x, y))).get_occupant()
+                                southwest = west_position and west_position.get_color() != game.get_enemy_turn()
+
                                 if southwest:
-                                    pieces_with_adjacent.append(((x, y), board.position(Directions.SOUTHWEST.value, board.position(Directions.SOUTHWEST.value, (x, y))), piece))
-                                if southeast:
-                                    pieces_with_adjacent.append(((x, y), board.position(Directions.SOUTHEAST.value, board.position(Directions.SOUTHEAST.value, (x, y))), piece))
+                                    pieces_with_adjacent.append(((x, y), legal_moves[0], piece))
+                                else:
+                                    position = legal_moves[1] if len(legal_moves) > 1 else legal_moves[0]
+                                    pieces_with_adjacent.append(((x, y), position, piece))
 
                             else:
                                 if southwest:
