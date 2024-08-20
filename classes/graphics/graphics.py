@@ -85,4 +85,4 @@ class Graphics(GraphicsModel, GraphicsContract):
         self.set_font_obj(pygame.font.Font('freesansbold.ttf', 44))
         self.set_text_surface_obj(self.get_font_obj().render(message, True, COLORS.RED.value, COLORS.WHITE.value))
         self.set_text_rect_obj(self.get_text_surface_obj().get_rect())
-        self.get_text_rect_obj().center = (self.get_window_size() >> 1, self.get_window_size() >> 1)
+        self.get_text_rect_obj().center = (self.get_window_size() // 2, self.get_window_size() //2)

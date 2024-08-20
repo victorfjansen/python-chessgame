@@ -220,6 +220,13 @@ package Enemy <<Frame>> {
 }
 }
 
+class StaticSounds{
+    + sourceFileDir:string
+    + static initialize_mixer():void
+    + static play_movement_sound():void
+    + static play_promote_piece_sound():void
+}
+
 EasyEnemy --|> EnemyContract : herda
 MediumEnemy --|> EnemyContract : herda
 
@@ -246,7 +253,7 @@ Square -right-|> SquareModel : herda
 
 Square "1" o--> "1" Piece : contém
 
-Board "1" *--> "1..*" Square : contém
+Board "1" *-up-> "1..*" Square : contém
 
 Graphics "1" o--> "1" Board : contém
 
@@ -254,5 +261,7 @@ Game "1" *--> "1" Graphics : contém
 Game "1" *-up-> "1" EnemyContract
 
 Game -- Piece
+
+Board --> StaticSounds
 
 @enduml

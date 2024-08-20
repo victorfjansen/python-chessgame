@@ -1,7 +1,6 @@
 import pygame.mixer
 import os
 
-
 class StaticSounds:
     sourceFileDir = os.path.dirname(os.path.abspath(__file__))
 
